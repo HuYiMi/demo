@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.8/dist/vue.js"></script>
+</head>
+
+<body>
+  <div class="page-top">
+    <div class="page-content">
+      <h2>任务计划列表</h2>
+    </div>
+  </div>
+  <div class="main" >
+    <h3 class="big-title">添加任务：</h3>
+    <input placeholder="例如：吃饭睡觉打豆豆；    提示：+回车即可添加任务" class="task-input" type="text" v-model="addInp" @keyup.13="addList"/>
+    <ul class="task-count">
+      <li>2个任务未完成</li>
+      <li class="action">
+        <a class="active" href="#">所有任务</a>
+        <a href="#">未完成的任务</a>
+        <a href="#">完成的任务</a>
+      </li>
+    </ul>
+    <h3 class="big-title">任务列表：</h3>
+    <div class="tasks">
+
+      <span class="no-task-tip">还没有添加任何任务</span>
+      <ul class="todo-list" >
+        <li class="todo" :class="{completed:item.isCompleted,editing:editingindex==index}" v-for="(item,index) in list" @dblclick="addEdit(index)">
+          <div class="view">
+            <input class="toggle" type="checkbox" v-model="item.isCompleted"/>
+            <label v-text="item.title"></label>
+            <button class="destroy" @click="delList(index)"></button>
+          </div>
+          <input class="edit" type="text"  v-model="item.title" @keyup.13="editList" @blur="editList" @keyup.esc="giveUp(index)"/>
+        </li>
+        <!-- <li class="todo completed">
+          <div class="view">
+            <input class="toggle" type="checkbox" checked="cheecked" />
+            <label>vue学习计划</label>
+            <button class="destroy"></button>
+          </div>
+          <input class="edit" type="text" />
+        </li>
+        <li class="todo editing">
+          <div class="view">
+            <input class="toggle" type="checkbox" />
+            <label>vue学习计划</label>
+            <button class="destroy"></button>
+          </div>
+          <input class="edit" type="text" />
+        </li> -->
+      </ul>
+    </div>
+  </div>
+  <script>
+    var app=new Vue({
+      el:".main",
+      data:{
+        list:[
+          {
+            title:"vue学习计划",
+            isCompleted:false,
+          },
+          {
+            title:"我们一起去上网吧",
+            isCompleted:true,
+          }
+        ],
+        // 输入框里面的值
+        addInp:"",
+        // 记录正在编辑的这一项
+        editingindex:Number,
+        // 记录之前的值
+        beforeEdit:""
+      },
+      methods:{
+        // 添加任务
+        addList(){
+          this.list.push({title:this.addInp,isCompleted:false})
+          this.addInp=""
+        },
+        // 删除任务
+        delList(index){
+           this.list.splice(index,1)
+        },
+        // 添加修改
+        addEdit(index){
+         this.editingindex=index;
+         this.beforeEdit=this.list[index].title;
+        },
+        // 修改任务
+        editList(){
+          this.editingindex=-1;
+        },
+        // 放弃修改
+        giveUp(index){
+          this.list[index].title= this.beforeEdit;
+          this.editingindex=-1;
+        }
+      }
+    })
+  </script>
+</body>
+</html>
